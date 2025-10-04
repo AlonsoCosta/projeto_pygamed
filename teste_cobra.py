@@ -127,11 +127,21 @@ def rodar_jogo():
 
         else:
             tela.fill(cores.preto)
-            fonte = pygame.font.SysFont('Arial', 28, True, True)
-            texto = fonte.render("Game Over! Pressione R para reiniciar", True, cores.branco)
-            rect = texto.get_rect(center=(largura//2, altura//2))
-            tela.blit(texto, rect)
+            fonte_txt = pygame.font.SysFont('Arial', 28, True, True)
+            fonte_msg = pygame.font.SysFont('Arial', 16, True, True)
+            texto = f"Game Over! Você fez {pontos} ponto(s)"
+            txt_formatado = fonte_txt.render(texto, True, (cores.branco))
+            ret_txt = txt_formatado.get_rect(center=(largura//2, altura//2 - 50))
+            msg = "Pressione R para reiniciar"
+            msg_formatado = fonte_msg.render(msg, True, (cores.branco))
+            ret_msg = msg_formatado.get_rect(center=(largura//2, altura//2 + 50))
 
+            tempo = pygame.time.get_ticks() #retorna o tempo em milissegundos desde a inicialização do jogo
+            pisca = 500 # intervalo de tempo em 500 milissegundos
+            if (tempo % (pisca * 2)) < pisca: # tempo % 1000 < pisca(500): Retorna a mensagem, caso contrário, some.
+                tela.blit(msg_formatado, ret_msg) # Desenha a mensagem na tela
+            morreu = True
+            
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -140,7 +150,8 @@ def rodar_jogo():
                     if event.key == K_r:
                         x_cobra, y_cobra, dir_x, dir_y, pixels, comprimento, comida_x, comida_y, pontos = reiniciar_jogo()
                         morreu = False
-
+            ret_txt.center = largura//2, altura//2
+            tela.blit(txt_formatado, ret_txt)
         pygame.display.update()
 
 if __name__ == "__main__":
